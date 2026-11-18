@@ -1,0 +1,28 @@
+server:
+  port: 8081
+  spring:
+    application:
+      name: notification-service
+
+      kafka:
+        bootstrap-servers: localhost:9094
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+      Key-deserializer: org.apche.kafka.common.serialization.StringDeserialization
+
+      spring:
+        kafka:
+          consumer:
+            value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+            properties:
+              # Pour autoriser la d�s�rialisation de tous les packages en JSON
+              spring.json.trusted.packages: "com.cwa.*"
+          spring.value.json.default.type: "com.cwa.notificationservice.dto.OrderEvent"
+          listener:
+            ack-mode: RECORD
+            concurrency: 3
+
+          kafka:
+            topic:
+              orders: orders-topic
